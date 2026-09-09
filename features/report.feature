@@ -39,3 +39,4 @@ Scenario: Professor attempts to view report of a class they do not teach
     And I am logged in as professor "Paulo Borba"
     When I attempt to view the performance report for class "BD 2025.2"
     Then I should see an error message "Acesso negado: Você não é o professor responsável por esta turma"
+    And I should be redirected to my home page
