@@ -39,3 +39,20 @@ Scenario: Professor attempts to view report of a class they do not teach
     And I am logged in as professor "Paulo Borba"
     When I attempt to view the performance report for class "BD 2025.2"
     Then I should see an error message "Acesso negado: Você não é o professor responsável por esta turma"
+
+Scenario: Generation of class report including attendance-based failures
+    Given the class "ESS 2025.2" has the following student performance records:
+        | student      | average | attendance | status              |
+        | João Silva   | 8.5     | 95%        | passou por média    |
+        | Maria Costa  | 7.0     | 80%        | passou por média    |
+        | Pedro Alves  | 6.0     | 70%        | reprovado por falta |
+        | Ana Souza    | 3.0     | 90%        | reprovado por nota  |
+    And I am logged in as professor "Paulo Borba"
+    And I am at the "Class Reports" page
+    When I view the performance report for class "ESS 2025.2"
+    Then I should see the performance metrics for "ESS 2025.2"
+    And the report should display:
+        | metric                            | percentage |
+        | percentual de passou por média    | 50%        |
+        | percentual de reprovado por falta | 25%        |
+        | percentual de reprovado por nota  | 25%        |
