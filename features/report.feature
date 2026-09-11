@@ -56,3 +56,21 @@ Scenario: Generation of class report including attendance-based failures
         | percentual de passou por média    | 50%        |
         | percentual de reprovado por falta | 25%        |
         | percentual de reprovado por nota  | 25%        |
+
+Scenario: Filter class performance report by registration period and enrollment status
+  Given the class "ESS 2025.2" has the following student enrollment records:
+    | student      | registration period | status   |
+    | João Silva   | Matrícula           | Ativo    |
+    | Maria Costa  | Matrícula           | Ativo    |
+    | Pedro Alves  | Rematrícula         | Trancado |
+    | Ana Souza    | Rematrícula         | Trancado |
+    | Carlos Lima  | Matrícula           | Trancado |
+  And I am logged in as professor "Paulo Borba"
+  And I am at the "Class Reports" page for "ESS 2025.2"
+  When I filter the report by period "Rematrícula" and status "Trancado"
+  Then I should see "2" students in the filtered report
+  And the report list should display:
+    | student     | registration period | status   |
+    | Pedro Alves | Rematrícula         | Trancado |
+    | Ana Souza   | Rematrícula         | Trancado |
+  And I should not see "Carlos Lima", "João Silva" or "Maria Costa" in the filtered list
