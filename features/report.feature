@@ -40,3 +40,38 @@ Scenario: Professor attempts to view report of a class they do not teach
     When I attempt to view the performance report for class "BD 2025.2"
     Then I should see an error message "Acesso negado: Você não é o professor responsável por esta turma"
     And I should be redirected to my home page
+
+Scenario: Generation of class report including attendance-based failures
+    Given the class "ESS 2025.2" has the following student performance records:
+        | student      | average | attendance | status              |
+        | João Silva   | 8.5     | 95%        | passou por média    |
+        | Maria Costa  | 7.0     | 80%        | passou por média    |
+        | Pedro Alves  | 6.0     | 70%        | reprovado por falta |
+        | Ana Souza    | 3.0     | 90%        | reprovado por nota  |
+    And I am logged in as professor "Paulo Borba"
+    And I am at the "Class Reports" page
+    When I view the performance report for class "ESS 2025.2"
+    Then I should see the performance metrics for "ESS 2025.2"
+    And the report should display:
+        | metric                            | percentage |
+        | percentual de passou por média    | 50%        |
+        | percentual de reprovado por falta | 25%        |
+        | percentual de reprovado por nota  | 25%        |
+
+Scenario: Filter class performance report by registration period and enrollment status
+  Given the class "ESS 2025.2" has the following student enrollment records:
+    | student      | registration period | status   |
+    | João Silva   | Matrícula           | Ativo    |
+    | Maria Costa  | Matrícula           | Ativo    |
+    | Pedro Alves  | Rematrícula         | Trancado |
+    | Ana Souza    | Rematrícula         | Trancado |
+    | Carlos Lima  | Matrícula           | Trancado |
+  And I am logged in as professor "Paulo Borba"
+  And I am at the "Class Reports" page for "ESS 2025.2"
+  When I filter the report by period "Rematrícula" and status "Trancado"
+  Then I should see "2" students in the filtered report
+  And the report list should display:
+    | student     | registration period | status   |
+    | Pedro Alves | Rematrícula         | Trancado |
+    | Ana Souza   | Rematrícula         | Trancado |
+  And I should not see "Carlos Lima", "João Silva" or "Maria Costa" in the filtered list
