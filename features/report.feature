@@ -69,7 +69,7 @@ Scenario: Filter class performance report by registration period and enrollment 
   And I am logged in as professor "Paulo Borba"
   And I am at the "Class Reports" page for "ESS 2025.2"
   When I filter the report by period "Rematrícula" and status "Trancado"
-  Then I should see "2" students in the filtered report
+  Then I should see "Pedro Alves" and "Ana Souza" in the filtered report
   And the report list should display:
     | student     | registration period | status   |
     | Pedro Alves | Rematrícula         | Trancado |
