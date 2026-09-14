@@ -76,3 +76,11 @@ Scenario: Filter class performance report by registration period and enrollment 
         | Pedro Alves | Rematrícula         | Trancado |
         | Ana Souza   | Rematrícula         | Trancado |
     And I should not see "Carlos Lima", "João Silva" or "Maria Costa" in the filtered list
+
+Scenario: Change the visualization chart format for the class performance report
+    Given the class "ESS 2025.2" has performance records in the system
+    And I am logged in as the instructor "Paulo Borba"
+    And I am viewing the performance report for class "ESS 2025.2" as a "bar chart"
+    When I request to view the performance report as a "pie chart"
+    Then I should see the performance report displayed as a "pie chart"
+    And the chart should accurately represent the proportions of performance statuses for class "ESS 2025.2"
