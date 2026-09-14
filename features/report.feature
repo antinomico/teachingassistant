@@ -26,6 +26,7 @@ Scenario: Attempt to view report for a class with no graded students
     And I am at the "Class Reports" page
     When I view the performance report for class "ESS 2026.1"
     Then I should see the error message "Relatório de desempenho indisponível para turmas sem notas registradas"
+    And I should be redirected to my home page
 
 Scenario: Unauthorized student attempts to view class performance report
     Given I am logged in as student "Pedro Alves"
